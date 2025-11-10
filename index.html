@@ -1,0 +1,920 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+
+    <script src="./utils.js"></script>
+    <link rel="stylesheet" href="vis-network.css" />
+    <script src="vis-network.min.js"></script>
+
+    <center>
+      <h1></h1>
+    </center>
+
+    <link href="./tom-select.css" rel="stylesheet" />
+    <script src="./tom-select.complete.min.js"></script>
+
+    <center>
+      <h1></h1>
+    </center>
+    <style type="text/css">
+      #mynetwork {
+        width: 100%;
+        height: 100vh;
+        background-color: #ffffff;
+
+        position: relative;
+        float: left;
+      }
+    </style>
+
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="card border-0" style="width: 100%">
+      <div id="mynetwork" class="card-body"></div>
+    </div>
+
+    <script type="text/javascript">
+      var edges;
+      var nodes;
+      var allNodes;
+      var allEdges;
+      var nodeColors;
+      var originalNodes;
+      var network;
+      var container;
+      var options, data;
+      var filter = {
+        item: "",
+        property: "",
+        value: [],
+      };
+
+      function drawGraph() {
+        var container = document.getElementById("mynetwork");
+
+        nodes = new vis.DataSet([
+          {
+            color: "#288F94",
+            font: { color: "black" },
+            id: "Product data",
+            label: "Product data",
+            shape: "dot",
+            size: 54,
+            title: "Product data",
+          },
+          {
+            color: "#FDBB3A",
+            font: { color: "black" },
+            id: "Building data",
+            label: "Building data",
+            shape: "dot",
+            size: 42,
+            title: "Building data",
+          },
+          {
+            color: "#EC1C80",
+            font: { color: "black" },
+            id: "Stakeholders\u0027 responsibilities",
+            label: "Stakeholders\u0027 responsibilities",
+            shape: "dot",
+            size: 24,
+            title: "Stakeholders\u0027 responsibilities",
+          },
+          {
+            color: "#FB7129",
+            font: { color: "black" },
+            id: "Characteristics",
+            label: "Characteristics",
+            shape: "dot",
+            size: 30,
+            title: "Characteristics",
+          },
+          {
+            color: "#6E6E6E",
+            font: { color: "black" },
+            id: "Connected services",
+            label: "Connected services",
+            shape: "dot",
+            size: 36,
+            title: "Connected services",
+          },
+          {
+            color: "#946252",
+            font: { color: "black" },
+            id: "Technical Features",
+            label: "Technical Features",
+            shape: "dot",
+            size: 45,
+            title: "Technical Features",
+          },
+          {
+            color: "#FFEDBF",
+            font: { color: "black" },
+            id: "GIS Address",
+            label: "GIS Address",
+            shape: "dot",
+            size: 18,
+            title: "GIS Address",
+          },
+          {
+            color: "#FFEDBF",
+            font: { color: "black" },
+            id: "GIS Access to building",
+            label: "GIS Access to building",
+            shape: "dot",
+            size: 18,
+            title: "GIS Access to building",
+          },
+          {
+            color: "#FFEDBF",
+            font: { color: "black" },
+            id: "Deconstruction time-frame",
+            label: "Deconstruction time-frame",
+            shape: "dot",
+            size: 21,
+            title: "Deconstruction time-frame",
+          },
+          {
+            color: "#FFEDBF",
+            font: { color: "black" },
+            id: "Construction year",
+            label: "Construction year",
+            shape: "dot",
+            size: 21,
+            title: "Construction year",
+          },
+          {
+            color: "#FFEDBF",
+            font: { color: "black" },
+            id: "Last refurbishment year",
+            label: "Last refurbishment year",
+            shape: "dot",
+            size: 21,
+            title: "Last refurbishment year",
+          },
+          {
+            color: "#B6D6D7",
+            font: { color: "black" },
+            id: "Location in the building",
+            label: "Location in the building",
+            shape: "dot",
+            size: 21,
+            title: "Location in the building",
+          },
+          {
+            color: "#B6D6D7",
+            font: { color: "black" },
+            id: "SI-Units",
+            label: "SI-Units",
+            shape: "dot",
+            size: 24,
+            title: "SI-Units",
+          },
+          {
+            color: "#B6D6D7",
+            font: { color: "black" },
+            id: "Price",
+            label: "Price",
+            shape: "dot",
+            size: 18,
+            title: "Price",
+          },
+          {
+            color: "#B6D6D7",
+            font: { color: "black" },
+            id: "Material",
+            label: "Material",
+            shape: "dot",
+            size: 18,
+            title: "Material",
+          },
+          {
+            color: "#B6D6D7",
+            font: { color: "black" },
+            id: "Contamination",
+            label: "Contamination",
+            shape: "dot",
+            size: 18,
+            title: "Contamination",
+          },
+          {
+            color: "#B6D6D7",
+            font: { color: "black" },
+            id: "Ease of deconstruction",
+            label: "Ease of deconstruction",
+            shape: "dot",
+            size: 27,
+            title: "Ease of deconstruction",
+          },
+          {
+            color: "#B6D6D7",
+            font: { color: "black" },
+            id: "Condition",
+            label: "Condition",
+            shape: "dot",
+            size: 30,
+            title: "Condition",
+          },
+          {
+            color: "#B6D6D7",
+            font: { color: "black" },
+            id: "Availability date",
+            label: "Availability date",
+            shape: "dot",
+            size: 21,
+            title: "Availability date",
+          },
+          {
+            color: "#B6D6D7",
+            font: { color: "black" },
+            id: "Graphical representation",
+            label: "Graphical representation",
+            shape: "dot",
+            size: 30,
+            title: "Graphical representation",
+          },
+          {
+            color: "#B6D6D7",
+            font: { color: "black" },
+            id: "Production year",
+            label: "Production year",
+            shape: "dot",
+            size: 24,
+            title: "Production year",
+          },
+          {
+            color: "#B6D6D7",
+            font: { color: "black" },
+            id: "Quantity",
+            label: "Quantity",
+            shape: "dot",
+            size: 18,
+            title: "Quantity",
+          },
+          {
+            color: "#B6D6D7",
+            font: { color: "black" },
+            id: "Weathering",
+            label: "Weathering",
+            shape: "dot",
+            size: 18,
+            title: "Weathering",
+          },
+          {
+            color: "#B6D6D7",
+            font: { color: "black" },
+            id: "Connection type",
+            label: "Connection type",
+            shape: "dot",
+            size: 18,
+            title: "Connection type",
+          },
+          {
+            color: "#B6D6D7",
+            font: { color: "black" },
+            id: "Dimensions",
+            label: "Dimensions",
+            shape: "dot",
+            size: 21,
+            title: "Dimensions",
+          },
+          {
+            color: "#B6D6D7",
+            font: { color: "black" },
+            id: "Weight",
+            label: "Weight",
+            shape: "dot",
+            size: 18,
+            title: "Weight",
+          },
+          {
+            color: "#B6D6D7",
+            font: { color: "black" },
+            id: "Point Cloud",
+            label: "Point Cloud",
+            shape: "dot",
+            size: 21,
+            title: "Point Cloud",
+          },
+          {
+            color: "#B6D6D7",
+            font: { color: "black" },
+            id: "Plan",
+            label: "Plan",
+            shape: "dot",
+            size: 21,
+            title: "Plan",
+          },
+          {
+            color: "#B6D6D7",
+            font: { color: "black" },
+            id: "Model",
+            label: "Model",
+            shape: "dot",
+            size: 18,
+            title: "Model",
+          },
+          {
+            color: "#B6D6D7",
+            font: { color: "black" },
+            id: "Photograph",
+            label: "Photograph",
+            shape: "dot",
+            size: 24,
+            title: "Photograph",
+          },
+          {
+            color: "#FACB9C",
+            font: { color: "black" },
+            id: "Automation",
+            label: "Automation",
+            shape: "dot",
+            size: 30,
+            title: "Automation",
+          },
+          {
+            color: "#FACB9C",
+            font: { color: "black" },
+            id: "Transparency / Open Standards",
+            label: "Transparency / Open Standards",
+            shape: "dot",
+            size: 24,
+            title: "Transparency / Open Standards",
+          },
+          {
+            color: "#FACB9C",
+            font: { color: "black" },
+            id: "Efficiency",
+            label: "Efficiency",
+            shape: "dot",
+            size: 39,
+            title: "Efficiency",
+          },
+          {
+            color: "#FACB9C",
+            font: { color: "black" },
+            id: "Improved communication",
+            label: "Improved communication",
+            shape: "dot",
+            size: 24,
+            title: "Improved communication",
+          },
+          {
+            color: "#FACB9C",
+            font: { color: "black" },
+            id: "Simplicity",
+            label: "Simplicity",
+            shape: "dot",
+            size: 24,
+            title: "Simplicity",
+          },
+          {
+            color: "#FACB9C",
+            font: { color: "black" },
+            id: "Low Data-Density",
+            label: "Low Data-Density",
+            shape: "dot",
+            size: 18,
+            title: "Low Data-Density",
+          },
+          {
+            color: "#FACB9C",
+            font: { color: "black" },
+            id: "Cost",
+            label: "Cost",
+            shape: "dot",
+            size: 21,
+            title: "Cost",
+          },
+          {
+            color: "#FACB9C",
+            font: { color: "black" },
+            id: "Time",
+            label: "Time",
+            shape: "dot",
+            size: 18,
+            title: "Time",
+          },
+          {
+            color: "#C8A89A",
+            font: { color: "black" },
+            id: "Circularity Index",
+            label: "Circularity Index",
+            shape: "dot",
+            size: 21,
+            title: "Circularity Index",
+          },
+          {
+            color: "#C8A89A",
+            font: { color: "black" },
+            id: "Product Booking",
+            label: "Product Booking",
+            shape: "dot",
+            size: 21,
+            title: "Product Booking",
+          },
+          {
+            color: "#C8A89A",
+            font: { color: "black" },
+            id: "Portfolio Management",
+            label: "Portfolio Management",
+            shape: "dot",
+            size: 18,
+            title: "Portfolio Management",
+          },
+          {
+            color: "#C8A89A",
+            font: { color: "black" },
+            id: "Product Marking",
+            label: "Product Marking",
+            shape: "dot",
+            size: 18,
+            title: "Product Marking",
+          },
+          {
+            color: "#C8A89A",
+            font: { color: "black" },
+            id: "2D Data generation",
+            label: "2D Data generation",
+            shape: "dot",
+            size: 21,
+            title: "2D Data generation",
+          },
+          {
+            color: "#C8A89A",
+            font: { color: "black" },
+            id: "Search Alert",
+            label: "Search Alert",
+            shape: "dot",
+            size: 18,
+            title: "Search Alert",
+          },
+          {
+            color: "#C8A89A",
+            font: { color: "black" },
+            id: "Open API",
+            label: "Open API",
+            shape: "dot",
+            size: 21,
+            title: "Open API",
+          },
+          {
+            color: "#C8A89A",
+            font: { color: "black" },
+            id: "Editing BIM Data",
+            label: "Editing BIM Data",
+            shape: "dot",
+            size: 21,
+            title: "Editing BIM Data",
+          },
+          {
+            color: "#C2C2C2",
+            font: { color: "black" },
+            id: "Data Quality Control",
+            label: "Data Quality Control",
+            shape: "dot",
+            size: 24,
+            title: "Data Quality Control",
+          },
+          {
+            color: "#C2C2C2",
+            font: { color: "black" },
+            id: "Repair",
+            label: "Repair",
+            shape: "dot",
+            size: 21,
+            title: "Repair",
+          },
+          {
+            color: "#C2C2C2",
+            font: { color: "black" },
+            id: "Insurance / Aftermarket Warranty",
+            label: "Insurance / Aftermarket Warranty",
+            shape: "dot",
+            size: 21,
+            title: "Insurance / Aftermarket Warranty",
+          },
+          {
+            color: "#C2C2C2",
+            font: { color: "black" },
+            id: "Logistics / Delivery",
+            label: "Logistics / Delivery",
+            shape: "dot",
+            size: 21,
+            title: "Logistics / Delivery",
+          },
+          {
+            color: "#C2C2C2",
+            font: { color: "black" },
+            id: "BIM Survey",
+            label: "BIM Survey",
+            shape: "dot",
+            size: 21,
+            title: "BIM Survey",
+          },
+          {
+            color: "#C2C2C2",
+            font: { color: "black" },
+            id: "Storage",
+            label: "Storage",
+            shape: "dot",
+            size: 24,
+            title: "Storage",
+          },
+          {
+            color: "#C2C2C2",
+            font: { color: "black" },
+            id: "Financial Instruments",
+            label: "Financial Instruments",
+            shape: "dot",
+            size: 30,
+            title: "Financial Instruments",
+          },
+          {
+            color: "#C2C2C2",
+            font: { color: "black" },
+            id: "Futures",
+            label: "Futures",
+            shape: "dot",
+            size: 18,
+            title: "Futures",
+          },
+          {
+            color: "#C2C2C2",
+            font: { color: "black" },
+            id: "Contract breach safeguards / Lease agreements",
+            label: "Contract breach safeguards / Lease agreements",
+            shape: "dot",
+            size: 18,
+            title: "Contract breach safeguards / Lease agreements",
+          },
+          {
+            color: "#C2C2C2",
+            font: { color: "black" },
+            id: "Funds / Loans",
+            label: "Funds / Loans",
+            shape: "dot",
+            size: 21,
+            title: "Funds / Loans",
+          },
+          {
+            color: "#F9C3E1",
+            font: { color: "black" },
+            id: "Data provision",
+            label: "Data provision",
+            shape: "dot",
+            size: 36,
+            title: "Data provision",
+          },
+          {
+            color: "#F9C3E1",
+            font: { color: "black" },
+            id: "Deconstruction",
+            label: "Deconstruction",
+            shape: "dot",
+            size: 27,
+            title: "Deconstruction",
+          },
+          {
+            color: "#F9C3E1",
+            font: { color: "black" },
+            id: "Data confidentiality",
+            label: "Data confidentiality",
+            shape: "dot",
+            size: 24,
+            title: "Data confidentiality",
+          },
+        ]);
+        edges = new vis.DataSet([
+          { from: "Building data", label: "", to: "GIS Address" },
+          { from: "Building data", label: "", to: "GIS Access to building" },
+          { from: "Building data", label: "", to: "Deconstruction time-frame" },
+          { from: "Building data", label: "", to: "Construction year" },
+          { from: "Building data", label: "", to: "Last refurbishment year" },
+          { from: "Product data", label: "", to: "Location in the building" },
+          { from: "Product data", label: "", to: "SI-Units" },
+          { from: "Product data", label: "", to: "Price" },
+          { from: "Product data", label: "", to: "Material" },
+          { from: "Product data", label: "", to: "Contamination" },
+          { from: "Product data", label: "", to: "Ease of deconstruction" },
+          { from: "Product data", label: "", to: "Condition" },
+          { from: "Product data", label: "", to: "Availability date" },
+          { from: "Product data", label: "", to: "Graphical representation" },
+          { from: "Product data", label: "", to: "Production year" },
+          { from: "Product data", label: "", to: "Quantity" },
+          { from: "Condition", label: "Is associated with", to: "Weathering" },
+          {
+            from: "Ease of deconstruction",
+            label: "Is part of",
+            to: "Connection type",
+          },
+          {
+            from: "Ease of deconstruction",
+            label: "Is part of",
+            to: "Dimensions",
+          },
+          { from: "Ease of deconstruction", label: "Is part of", to: "Weight" },
+          { from: "Condition", label: "Informs", to: "Point Cloud" },
+          { from: "Graphical representation", label: "Is part of", to: "Plan" },
+          {
+            from: "Graphical representation",
+            label: "Is part of",
+            to: "Model",
+          },
+          {
+            from: "Graphical representation",
+            label: "Is part of",
+            to: "Photograph",
+          },
+          { from: "Condition", label: "Informs", to: "Photograph" },
+          {
+            from: "Point Cloud",
+            label: "Is part of",
+            to: "Graphical representation",
+          },
+          { from: "SI-Units", label: "Is part of", to: "Building data" },
+          {
+            from: "Building data",
+            label: "Is part of",
+            to: "Location in the building",
+          },
+          {
+            from: "Deconstruction time-frame",
+            label: "Is associated with",
+            to: "Availability date",
+          },
+          {
+            from: "Production year",
+            label: "Is associated with",
+            to: "Construction year",
+          },
+          {
+            from: "Production year",
+            label: "Is associated with",
+            to: "Last refurbishment year",
+          },
+          { from: "SI-Units", label: "Is part of", to: "Dimensions" },
+          { from: "Characteristics", label: "Is part of", to: "Automation" },
+          {
+            from: "Characteristics",
+            label: "Is part of",
+            to: "Transparency / Open Standards",
+          },
+          { from: "Characteristics", label: "Is part of", to: "Efficiency" },
+          {
+            from: "Characteristics",
+            label: "Is part of",
+            to: "Improved communication",
+          },
+          { from: "Characteristics", label: "Is part of", to: "Simplicity" },
+          { from: "Efficiency", label: "Is part of", to: "Low Data-Density" },
+          { from: "Efficiency", label: "Is part of", to: "Cost" },
+          { from: "Efficiency", label: "Is part of", to: "Time" },
+          { from: "Simplicity", label: "Is associated with", to: "Efficiency" },
+          {
+            from: "Improved communication",
+            label: "Is associated with",
+            to: "Efficiency",
+          },
+          {
+            from: "Technical Features",
+            label: "Is part of",
+            to: "Circularity Index",
+          },
+          {
+            from: "Technical Features",
+            label: "Is part of",
+            to: "Product Booking",
+          },
+          {
+            from: "Technical Features",
+            label: "Is part of",
+            to: "Portfolio Management",
+          },
+          {
+            from: "Technical Features",
+            label: "Is part of",
+            to: "Product Marking",
+          },
+          {
+            from: "Technical Features",
+            label: "Is part of",
+            to: "2D Data generation",
+          },
+          {
+            from: "Technical Features",
+            label: "Is part of",
+            to: "Search Alert",
+          },
+          { from: "Technical Features", label: "Is part of", to: "Open API" },
+          {
+            from: "Technical Features",
+            label: "Is part of",
+            to: "Editing BIM Data",
+          },
+          { from: "Efficiency", label: "Is part of", to: "Automation" },
+          { from: "Automation", label: "Hinders", to: "Photograph" },
+          {
+            from: "2D Data generation",
+            label: "Is associated with",
+            to: "Plan",
+          },
+          { from: "Automation", label: "Hinders", to: "Condition" },
+          {
+            from: "Transparency / Open Standards",
+            label: "Is associated with",
+            to: "Open API",
+          },
+          {
+            from: "Connected services",
+            label: "Is part of",
+            to: "Data Quality Control",
+          },
+          { from: "Connected services", label: "Is part of", to: "Repair" },
+          {
+            from: "Connected services",
+            label: "Is part of",
+            to: "Insurance / Aftermarket Warranty",
+          },
+          {
+            from: "Connected services",
+            label: "Is part of",
+            to: "Logistics / Delivery",
+          },
+          { from: "Connected services", label: "Is part of", to: "BIM Survey" },
+          { from: "Connected services", label: "Is part of", to: "Storage" },
+          {
+            from: "Connected services",
+            label: "Is part of",
+            to: "Financial Instruments",
+          },
+          {
+            from: "Efficiency",
+            label: "Is associated with",
+            to: "Technical Features",
+          },
+          {
+            from: "Technical Features",
+            label: "Is associated with",
+            to: "Simplicity",
+          },
+          {
+            from: "Circularity Index",
+            label: "Is part of",
+            to: "Improved communication",
+          },
+          { from: "Storage", label: "Is associated with", to: "Cost" },
+          {
+            from: "Data Quality Control",
+            label: "Is part of",
+            to: "Automation",
+          },
+          { from: "Financial Instruments", label: "Is part of", to: "Futures" },
+          {
+            from: "Financial Instruments",
+            label: "Is part of",
+            to: "Contract breach safeguards / Lease agreements",
+          },
+          {
+            from: "Financial Instruments",
+            label: "Is part of",
+            to: "Funds / Loans",
+          },
+          {
+            from: "Financial Instruments",
+            label: "Is part of",
+            to: "Insurance / Aftermarket Warranty",
+          },
+          {
+            from: "Funds / Loans",
+            label: "Is associated with",
+            to: "Product Booking",
+          },
+          {
+            from: "Stakeholders\u0027 responsibilities",
+            label: "Is part of",
+            to: "Data provision",
+          },
+          {
+            from: "Stakeholders\u0027 responsibilities",
+            label: "Is part of",
+            to: "Deconstruction",
+          },
+          {
+            from: "Data provision",
+            label: "Is associated with",
+            to: "Building data",
+          },
+          {
+            from: "Data provision",
+            label: "Is associated with",
+            to: "Product data",
+          },
+          {
+            from: "Data provision",
+            label: "Is associated with",
+            to: "Transparency / Open Standards",
+          },
+          {
+            from: "Data provision",
+            label: "Is associated with",
+            to: "BIM Survey",
+          },
+          {
+            from: "Data provision",
+            label: "Is associated with",
+            to: "Editing BIM Data",
+          },
+          {
+            from: "Data provision",
+            label: "Is associated with",
+            to: "Data Quality Control",
+          },
+          { from: "Deconstruction", label: "Is associated with", to: "Repair" },
+          {
+            from: "Deconstruction",
+            label: "Is associated with",
+            to: "Storage",
+          },
+          {
+            from: "Deconstruction",
+            label: "Is associated with",
+            to: "Logistics / Delivery",
+          },
+          {
+            from: "Stakeholders\u0027 responsibilities",
+            label: "Is part of",
+            to: "Data confidentiality",
+          },
+          {
+            from: "Data confidentiality",
+            label: "Hinders",
+            to: "Building data",
+          },
+          {
+            from: "Data confidentiality",
+            label: "Hinders",
+            to: "Product data",
+          },
+        ]);
+
+        nodeColors = {};
+        allNodes = nodes.get({ returnType: "Object" });
+        for (nodeId in allNodes) {
+          nodeColors[nodeId] = allNodes[nodeId].color;
+        }
+        allEdges = edges.get({ returnType: "Object" });
+
+        data = { nodes: nodes, edges: edges };
+
+        var options = {
+          nodes: {
+            borderWidth: 2,
+            borderWidthSelected: 4,
+            font: {
+              face: "Literata",
+              size: 14,
+              strokeWidth: 2,
+              weight: "bold",
+            },
+            shape: "box",
+            widthConstraint: { minimum: 80, maximum: 200 },
+          },
+          edges: {
+            color: { inherit: false },
+            smooth: { enabled: false },
+            font: { face: "Literata", align: "top" },
+          },
+          physics: {
+            enabled: true,
+            barnesHut: {
+              gravitationalConstant: -2000,
+              springConstant: 0.001,
+              centralGravity: 0.1,
+              avoidOverlap: 1,
+            },
+            solver: "barnesHut",
+            stabilization: {
+              enabled: true,
+              iterations: 1000,
+              updateInterval: 50,
+            },
+          },
+        };
+
+        network = new vis.Network(container, data, options);
+
+        return network;
+      }
+      drawGraph();
+    </script>
+  </body>
+</html>
